@@ -1,5 +1,6 @@
 :root{
     overflow-x: hidden;
+    --hover-color: rgb(140, 255, 222);
 }
 
 body{
@@ -7,5 +8,141 @@ body{
     padding: 0px;
     width: 100%;
     height: 100%;
+    background: linear-gradient( 90deg, #4E5054, #313338 );
 }
 
+.main-frame{
+    position: absolute;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    border: 1px solid white;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(30, 1fr);
+    grid-template-rows: repeat(30, 1fr);
+    grid-gap: 0px;
+    margin-top: 10px;
+    background: white;
+}
+
+.container > div {
+    width: 15px;
+    height: 15px;
+    background-color: white;
+}
+
+.container > div:hover {
+    background-color: var(--hover-color) !important;
+    opacity: 0.3;
+}
+
+.lower-tools{
+    width: 75%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    border: 1px solid white;
+}
+
+.colors {
+    width: fit-content ;
+    height: fit-content ;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    margin-left: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 5px ;
+}
+
+.colors > div {
+    width: 18px;
+    height: 13px;
+    transition: transform 0.12s ease-in ,box-shadow 0.12s ease-in-out;
+}
+
+.colors > div:hover{
+    transform: scale(1.5);
+    box-shadow: 0px 1px 10px white;
+}
+
+.chosen-color{
+    transform: scale(1.2);
+    border: 1px solid;
+}
+
+
+
+.mode-option{
+    cursor: pointer;
+    height: 53px;
+    width: 52px;
+    background: white;
+    margin-left: 10px;
+    border-radius: 5px;
+    transition: transform 0.12s ease-in;
+}
+
+.mode-option.pen{
+    margin-left: 48px;
+}
+
+.mode-option:hover{
+    transform: scale(1.1);
+}
+
+.chosen{
+    background: black;
+    
+}
+
+.chosen img{
+    filter: invert(1) brightness(1);
+}
+
+.mode-option img{
+    width: 70%;
+    height: 70%;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+
+.download{
+    width: 33px;
+    height: 33px;
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.reset{
+    width: 33px;
+    height: 33px;
+    position: absolute;
+    right: 20px;
+    top: 100px;
+    filter: invert(1);
+    cursor: pointer;
+}
+
+
+
+@media only screen and (max-width: 800px) {
+  }
