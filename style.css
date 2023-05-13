@@ -7,4 +7,78 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
+    background: linear-gradient( 90deg, #4E5054, #313338 );
 }
+
+.main-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+
+}
+
+.main-logo-mid{
+    margin-bottom: 100px;
+    position: relative;
+    color: white;
+    font-weight: bolder;
+    font-size: 150;
+}
+
+.button{
+    border: 2px solid white;
+    border-radius: 1.2rem;
+    color: white;
+    font-size: 25;
+    padding: 8px;
+    opacity: 0.8;
+    transition: 
+    transform 0.5s ease-in-out,
+    opacity 0.5s ease-in-out,
+    background 0.5s ease-in-out,
+    border-radius 0.5s ease-in-out,
+    padding 0.5s ease-in-out;
+}
+.button:hover{
+    background: white;
+    color: black;
+    cursor: pointer;
+    transform: translateY(-5px);
+    opacity: 1;
+    border-radius: 2rem;
+    padding: 8px 20px 8px 20px;
+}
+.button1{
+    margin-bottom: 25px;
+}
+
+.links{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 130px;
+    right: 50px ;
+}
+
+.imgs{
+    width: 50px;
+    height: 50px;
+    filter: brightness(0) invert(1);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+
+
+@media only screen and (max-width: 800px) {
+    .main-logo-mid{
+        font-size: 100;
+    }
+  }
