@@ -14,7 +14,7 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
-    background: linear-gradient( 90deg, #4E5054, #313338 );
+    background: linear-gradient( 45deg, #4E5054, #313338 ) no-repeat;
 }
 
 .main-container{
@@ -107,5 +107,9 @@ a:active{
 @media only screen and (max-width: 800px) {
     .main-logo-mid{
         font-size: 100;
+    }
+    .links{
+        right: 0px;
+        width: 110;
     }
   }
