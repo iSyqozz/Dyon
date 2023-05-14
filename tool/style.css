@@ -1,6 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
 :root{
     overflow-x: hidden;
     --hover-color: rgb(140, 255, 222);
+    font-family: 'Montserrat', sans-serif;
+
 }
 
 body{
@@ -9,6 +13,49 @@ body{
     width: 100%;
     height: 100%;
     background: linear-gradient( 90deg, #4E5054, #313338 );
+}
+
+.button{
+    position: absolute;
+    left: 20px;
+    text-align: center;
+    width: fit-content;
+    border: 2px solid white;
+    border-radius: 1.3rem;
+    color: white;
+    font-size: 25;
+    padding: 9px;
+    opacity: 0.8;
+    transition: 
+    transform 0.5s ease-in-out,
+    opacity 0.5s ease-in-out,
+    background 0.5s ease-in-out,
+    border-radius 0.5s ease-in-out,
+    padding 0.5s ease-in-out;
+}
+
+a{
+    z-index: 32876432;
+    text-decoration: none;
+}
+a:link{
+    text-decoration: none;
+}
+a:visited{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+}
+a:active{
+    text-decoration: none;
+}
+.button:hover{
+    background: white;
+    color: black;
+    cursor: pointer;
+    opacity: 1;
+    border-radius: 2rem;
 }
 
 .main-frame{
@@ -31,18 +78,12 @@ body{
     grid-template-rows: repeat(30, 1fr);
     grid-gap: 0px;
     margin-top: 10px;
-    background: white;
 }
 
 .container > div {
     width: 15px;
     height: 15px;
     background-color: white;
-}
-
-.container > div:hover {
-    background-color: var(--hover-color) !important;
-    opacity: 0.3;
 }
 
 .lower-tools{
@@ -96,7 +137,17 @@ body{
 }
 
 .mode-option.pen{
-    margin-left: 48px;
+    margin-left: 15px;
+}
+
+.curr-color{
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    background: white;
+    border-radius: 5px;
+    margin-left: 15px;
+    background-color: var(--hover-color);
 }
 
 .mode-option:hover{
@@ -130,6 +181,7 @@ body{
     top: 30px;
     filter: invert(1);
     cursor: pointer;
+    transition: transform 0.1s ease-in-out;
 }
 
 .reset{
@@ -140,6 +192,15 @@ body{
     top: 100px;
     filter: invert(1);
     cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+}
+
+.reset:hover{
+    transform: scale(1.1);
+}
+
+.download:hover{
+    transform: scale(1.1);
 }
 
 

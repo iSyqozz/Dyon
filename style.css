@@ -1,8 +1,15 @@
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 :root{
-    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif;
 }
 
+html{
+    position: relative;
+    overflow-x: hidden;
+}
 body{
+    position: relative;
+    overflow-x: hidden;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -44,6 +51,22 @@ body{
     border-radius 0.5s ease-in-out,
     padding 0.5s ease-in-out;
 }
+a{
+    z-index: 32876432;
+    text-decoration: none;
+}
+a:link{
+    text-decoration: none;
+}
+a:visited{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+}
+a:active{
+    text-decoration: none;
+}
 .button:hover{
     background: white;
     color: black;
@@ -72,7 +95,11 @@ body{
     height: 50px;
     filter: brightness(0) invert(1);
     cursor: pointer;
-    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+.imgs:hover{
+    transform: scale(1.15);
 }
 
 
