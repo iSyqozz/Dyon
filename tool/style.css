@@ -18,6 +18,7 @@ body{
 .button{
     position: absolute;
     left: 20px;
+    top: 5px;
     text-align: center;
     width: fit-content;
     border: 2px solid white;
