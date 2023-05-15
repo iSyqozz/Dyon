@@ -61,14 +61,15 @@ const colors = [
     '#f4b03c',
     '#ffffff',
 ];
+const root = document.documentElement;
 const container = document.querySelector('.container');
-const reset = document.querySelector('.reset');
+const palette_container = document.querySelector('.colors');
 const pen_option = document.querySelector('.pen');
 const bucket_option = document.querySelector('.bucket');
 const eraser_option = document.querySelector('.eraser');
-const palette_container = document.querySelector('.colors');
-const root = document.documentElement;
+const undo_option = document.querySelector('.return');
 const downloadButton = document.querySelector('.download');
+const reset = document.querySelector('.reset');
 var next = '#d7dadb';
 var mat = [];
 var curr_color = document.createElement('div');
@@ -78,12 +79,13 @@ prev_color.style.backgroundColor = 'rgb(140, 255, 222)';
 var curr_mode = pen_option;
 var prev_mode = pen_option;
 let isDrawing = false;
+var undoing = false;
 var initial_colors = new Map();
 var divToCoordsMap = new Map();
+var snapshots = [];
 //utility functions
 //resetting the grid
 function reset_grid() {
-    console.log('hi');
     var next = '#d7dadb';
     for (let i = 0; i < 30; i++) {
         mat[i][0].style.backgroundColor = next;
@@ -100,6 +102,37 @@ function reset_grid() {
             }
         }
     }
+    while (snapshots.length > 1) {
+        snapshots.pop();
+    }
+}
+// Function to retrieve the current target element from touch events
+function getCurrentDiv(touch) {
+    return document.elementFromPoint(touch.clientX, touch.clientY);
+}
+//using a snapshot
+function from_snapshot() {
+    try {
+        for (let i = 0; i < 30; i++) {
+            for (let j = 0; j < 30; j++) {
+                const col = snapshots[snapshots.length - 1][i][j];
+                mat[i][j].style.backgroundColor = col;
+            }
+        }
+    }
+    catch (e) {
+        console.log('no undo available.');
+    }
+}
+function create_snapshot() {
+    const copiedMatrix = [];
+    for (let i = 0; i < 30; i++) {
+        copiedMatrix.push([]);
+        for (let j = 0; j < 30; j++) {
+            copiedMatrix[i].push(mat[i][j].style.backgroundColor);
+        }
+    }
+    return copiedMatrix;
 }
 //drawing the pixel
 function draw_pixel(pixel) {
@@ -119,7 +152,6 @@ function bucketFill(clickedDiv) {
     const fillAdjacent = (div) => {
         if (!visitedDivs.has(div)) {
             visitedDivs.add(div);
-            console.log(clickedColor, div.style.backgroundColor);
             const coords = divToCoordsMap.get(div);
             const topDiv = coords[0] > 0 ? mat[coords[0] - 1][coords[1]] : null;
             const bottomDiv = coords[0] < mat.length - 1 ? mat[coords[0] + 1][coords[1]] : null;
@@ -200,6 +232,8 @@ function main() {
             root.style.setProperty('--hover-color', div.style.backgroundColor);
         });
     }
+    //pushing root snapshot
+    snapshots.push(create_snapshot());
     //changing modes
     pen_option.addEventListener('click', () => {
         if (curr_mode === pen_option) {
@@ -229,6 +263,14 @@ function main() {
         prev_mode.classList.remove('chosen');
         root.style.setProperty('--hover-color', 'rgba(255,255,255,0.3)');
     });
+    undo_option.addEventListener('click', () => {
+        if (snapshots.length > 1 && !undoing) {
+            snapshots.pop();
+            undoing = true;
+            from_snapshot();
+            undoing = false;
+        }
+    });
     // Add mousedown event listener
     container.addEventListener("mousedown", (e) => {
         isDrawing = true;
@@ -246,7 +288,6 @@ function main() {
     // Add mousemove event listener
     container.addEventListener("mousemove", (e) => {
         if (isDrawing) {
-            console.log('dragging');
             const current_div = e.target;
             if (curr_mode === pen_option) {
                 draw_pixel(current_div);
@@ -257,17 +298,66 @@ function main() {
         }
     });
     // Add mouseup event listener
-    container.addEventListener("mouseup", () => {
+    document.addEventListener("mouseup", (e) => {
+        if (isDrawing && snapshots.length < 30) {
+            const snapshot = create_snapshot();
+            snapshots.push(snapshot);
+        }
         console.log('out from mouseup');
         isDrawing = false;
     });
+    container.addEventListener("touchstart", (e) => {
+        e.preventDefault;
+        isDrawing = true;
+        const current_div = e.target;
+        if (curr_mode === pen_option) {
+            draw_pixel(current_div);
+        }
+        else if (curr_mode === eraser_option) {
+            erase_pixel(current_div);
+        }
+        else {
+            bucketFill(current_div);
+        }
+    }, { passive: false });
+    // Add mousemove event listener
+    container.addEventListener("touchmove", (e) => {
+        var _a;
+        if (isDrawing) {
+            const current_div = getCurrentDiv(e.touches[0]); // Retrieve the target element from the first touch point
+            if (!((_a = current_div.parentElement) === null || _a === void 0 ? void 0 : _a.classList.contains('container'))) {
+                return;
+            }
+            if (curr_mode === pen_option) {
+                draw_pixel(current_div);
+            }
+            else if (curr_mode === eraser_option) {
+                erase_pixel(current_div);
+            }
+        }
+    }, { passive: false });
+    // Add mouseup event listener
+    document.addEventListener("touchend", (e) => {
+        if (isDrawing && snapshots.length < 30) {
+            const snapshot = create_snapshot();
+            snapshots.push(snapshot);
+        }
+        e.preventDefault;
+        console.log('out from touchup');
+        isDrawing = false;
+    });
+    // Prevent scrolling during touchmove
+    window.addEventListener("touchmove", function (e) {
+        if (isDrawing) {
+            e.preventDefault();
+        }
+    }, { passive: false });
     //resetting canvas
     reset.addEventListener('click', reset_grid);
     //adding download capability
     downloadButton.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
         for (var i = 0; i < 30; i++) {
             for (var j = 0; j < 30; j++) {
-                console.log('fading');
                 const div = mat[i][j];
                 if (['rgb(215, 218, 219)', 'rgb(245, 245, 245)'].includes(div.style.backgroundColor)) {
                     div.style.backgroundColor = 'rgba(0,0,0,0)';
@@ -283,9 +373,7 @@ function main() {
         link.target = '_blank';
         for (var i = 0; i < 30; i++) {
             for (var j = 0; j < 30; j++) {
-                console.log('resetting');
                 const div = mat[i][j];
-                console.log(div.style.backgroundColor);
                 if (['rgba(0, 0, 0, 0)'].includes(div.style.backgroundColor)) {
                     div.style.backgroundColor = initial_colors.get(div);
                 }

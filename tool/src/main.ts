@@ -50,14 +50,17 @@ const colors = [
     '#ffffff',
     ]
 
+const root = document.documentElement;
 const container = document.querySelector('.container') as HTMLElement;
-const reset = document.querySelector('.reset') as HTMLElement;
+const palette_container = document.querySelector('.colors') as HTMLElement;
+
 const pen_option = document.querySelector('.pen') as HTMLElement;
 const bucket_option = document.querySelector('.bucket') as HTMLElement;
 const eraser_option = document.querySelector('.eraser') as HTMLElement;
-const palette_container = document.querySelector('.colors') as HTMLElement;
-const root = document.documentElement;
+const undo_option = document.querySelector('.return') as HTMLElement;
+
 const downloadButton = document.querySelector('.download') as HTMLElement;
+const reset = document.querySelector('.reset') as HTMLElement;
 
 
 
@@ -73,10 +76,11 @@ prev_color.style.backgroundColor = 'rgb(140, 255, 222)'
 var curr_mode:HTMLElement = pen_option;
 var prev_mode:HTMLElement = pen_option;
 let isDrawing:boolean = false;
+var undoing:boolean = false; 
 
 var initial_colors = new Map<HTMLElement, string>();
 var divToCoordsMap = new Map<HTMLElement,Array<number>>();
-var snapshots:Array<string> = []; 
+var snapshots:string[][][] = []; 
 
 
 //utility functions
@@ -100,22 +104,41 @@ function reset_grid(){
             }
         }
     }
+
+    while(snapshots.length > 1){
+        snapshots.pop();
+    }
 }
+
+// Function to retrieve the current target element from touch events
+function getCurrentDiv(touch:Touch) {
+    return document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement;
+  }
 
 //using a snapshot
 function from_snapshot(){
-
     try{
         for (let i = 0; i < 30; i++) {
             for (let j = 0; j < 30; j++) {
-                const div = mat[i][j];
-                div.style.backgroundColor = snapshots[snapshots.length-1]
+                const col = snapshots[snapshots.length-1][i][j];
+                mat[i][j].style.backgroundColor = col
             }
         }
     }catch(e){
         console.log('no undo available.')
     }
 }
+
+function create_snapshot(){
+    const copiedMatrix:string[][] = [];
+    for (let i = 0; i < 30; i++) {
+        copiedMatrix.push([]);
+        for (let j = 0; j < 30; j++) {
+            copiedMatrix[i].push(mat[i][j].style.backgroundColor);
+        }
+    }
+    return copiedMatrix
+} 
 
 //drawing the pixel
 function draw_pixel(pixel:HTMLElement){
@@ -139,7 +162,6 @@ function bucketFill(clickedDiv: HTMLElement) {
       if (!visitedDivs.has(div)) {
         visitedDivs.add(div);
         
-        console.log(clickedColor,div.style.backgroundColor)
 
 
         const coords = divToCoordsMap.get(div)!;
@@ -240,6 +262,8 @@ function main(){
         })
     }
 
+    //pushing root snapshot
+    snapshots.push(create_snapshot());
 
     //changing modes
     pen_option.addEventListener('click',()=>{
@@ -286,6 +310,17 @@ function main(){
 
     })
 
+    undo_option.addEventListener('click',()=>{
+        
+        if (snapshots.length > 1 && !undoing){
+            snapshots.pop()
+            undoing = true
+            from_snapshot()
+            undoing = false
+        } 
+
+    })
+
 
   
     // Add mousedown event listener
@@ -305,7 +340,6 @@ function main(){
     // Add mousemove event listener
     container.addEventListener("mousemove", (e) => {
       if (isDrawing) {
-        console.log('dragging');
         const current_div = e.target as HTMLElement
         
         if (curr_mode === pen_option){
@@ -317,10 +351,64 @@ function main(){
     });
   
     // Add mouseup event listener
-    container.addEventListener("mouseup", () => {
+    document.addEventListener("mouseup", (e) => {
+        if (isDrawing && snapshots.length < 30){
+            const snapshot = create_snapshot();
+            snapshots.push(snapshot);
+        }
         console.log('out from mouseup');
         isDrawing = false;
     });
+
+
+    container.addEventListener("touchstart", (e) => {
+        e.preventDefault;
+        isDrawing = true;
+        const current_div = e.target as HTMLElement
+  
+        if (curr_mode === pen_option){
+          draw_pixel(current_div);
+        }else if (curr_mode === eraser_option){
+          erase_pixel(current_div);
+        }else{
+          bucketFill(current_div);
+        }
+      },{ passive: false });
+    
+      
+      // Add mousemove event listener
+      container.addEventListener("touchmove", (e) => {
+        if (isDrawing) {
+          const current_div = getCurrentDiv(e.touches[0]); // Retrieve the target element from the first touch point
+          
+          if (!current_div.parentElement?.classList.contains('container')){
+            return
+          }
+          if (curr_mode === pen_option){
+              draw_pixel(current_div);
+            }else if (curr_mode === eraser_option){
+              erase_pixel(current_div);
+            }
+        }
+      },{ passive: false });
+    
+      // Add mouseup event listener
+      document.addEventListener("touchend", (e) => {
+        if (isDrawing && snapshots.length < 30){
+            const snapshot = create_snapshot();
+            snapshots.push(snapshot);
+        }
+          e.preventDefault;
+          console.log('out from touchup');
+          isDrawing = false;
+      });
+
+      // Prevent scrolling during touchmove
+      window.addEventListener("touchmove", function(e) {
+        if (isDrawing) {
+          e.preventDefault();
+        }
+      }, { passive: false });
   
 
 
@@ -333,7 +421,6 @@ function main(){
         
         for (var i=0 ; i<30; i++){
             for (var j=0; j<30; j++){
-                console.log('fading')
                 const div = mat[i][j];
                 if (['rgb(215, 218, 219)','rgb(245, 245, 245)'].includes(div.style.backgroundColor)){
                     div.style.backgroundColor = 'rgba(0,0,0,0)';
@@ -351,9 +438,7 @@ function main(){
 
         for (var i=0 ; i<30; i++){
             for (var j=0; j<30; j++){
-                console.log('resetting')
                 const div = mat[i][j];
-                console.log(div.style.backgroundColor);
                 if (['rgba(0, 0, 0, 0)'].includes(div.style.backgroundColor)){
                     div.style.backgroundColor = initial_colors.get(div)!
                 }
