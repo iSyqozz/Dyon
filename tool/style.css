@@ -103,6 +103,7 @@ a:active{
 }
 
 .colors {
+    overflow: hidden;
     width: fit-content ;
     height: fit-content ;
     display: grid;
@@ -110,7 +111,6 @@ a:active{
     grid-template-rows: repeat(4, 1fr);
     margin-left: 15px;
     cursor: pointer;
-    overflow: auto;
     border-radius: 5px ;
 }
 
@@ -251,6 +251,7 @@ a:active{
 
     .colors{
         margin-left: 15px;
+        overflow: auto;
     }
 
   }
