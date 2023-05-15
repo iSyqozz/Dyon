@@ -321,6 +321,17 @@ function main(){
 
     })
 
+    undo_option.addEventListener('touch',()=>{
+        
+        if (snapshots.length > 1 && !undoing){
+            snapshots.pop()
+            undoing = true
+            from_snapshot()
+            undoing = false
+        } 
+
+    })
+
 
   
     // Add mousedown event listener

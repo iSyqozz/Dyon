@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;900&display=swap');
 
 :root{
     font-family: 'Montserrat', sans-serif;
@@ -39,6 +39,7 @@ body{
 }
 
 .button{
+    font-weight: 300;
     border: 2px solid white;
     border-radius: 1rem;
     color: white;

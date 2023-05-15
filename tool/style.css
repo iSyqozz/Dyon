@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
 :root{
-    overflow-x: hidden;
     --hover-color: rgb(140, 255, 222);
     font-family: 'Montserrat', sans-serif;
 
@@ -25,8 +24,8 @@ body{
 
 .button{
     position: absolute;
-    left: 20px;
-    top: 5px;
+    left: 10px;
+    top: 10px;
     text-align: center;
     width: fit-content;
     border: 2px solid white;
@@ -227,4 +226,27 @@ a:active{
 
 
 @media only screen and (max-width: 800px) {
+
+    .container > div {
+        width: 12px;
+        height: 12px;
+        background-color: white;
+    }
+
+    .lower-tools{
+        width: 71%;
+    }
+
+    .bucket img{
+        width: 40px;
+        height: 40px;
+    }
+    .main-frame{
+        width: 502px;
+    }
+    .download{
+        top: 200px;
+    }
+
+
   }
