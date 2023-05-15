@@ -226,6 +226,11 @@ a:active{
 
 
 @media only screen and (max-width: 800px) {
+    @media only screen and (max-height: 600px) {
+        .download{
+            top: 200px;
+        }
+    }
 
     .container > div {
         width: 12px;
@@ -244,9 +249,7 @@ a:active{
     .main-frame{
         width: 502px;
     }
-    .download{
-        top: 200px;
-    }
+
 
 
   }
